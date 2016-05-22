@@ -53,33 +53,14 @@ public class CityMarker extends CommonMarker {
 		
 		// TODO: Implement this method
 		
-		int popupColor = pg.color(253, 237, 44);
-		int black = pg.color(0, 0, 0);
-		
-		int fontSize = 12;
-		
-		String text = String.format("City: %s, Country: %s, Population: %.2f Million",
-				getCity(), getCountry(), getPopulation());
-		float textWidth = pg.textWidth(text);
-		
-		
-		// popup box
-		pg.fill(popupColor);
-		pg.rect(x + TRI_SIZE, (y + TRI_SIZE) - fontSize, textWidth + 2, 14);
-
-		// popup text
-		pg.fill(black);
-		pg.stroke(black);
-		pg.textSize(fontSize);
-		pg.text(text, x + TRI_SIZE, y + TRI_SIZE);
 	
-		/*
+		
 		pg.fill(245,255,225);
 		pg.rect(x, y, 300, 15);
 		pg.fill(0,0,0);
-		//pg.text(getCity() + " " + getCountry() + " " + getPopulation(), x, y+10); 
-		 * 
-		 */
+		pg.text(getCity() + " " + getCountry() + " " + getPopulation(), x, y+10); 
+		 
+	
 	}
 	
 	
