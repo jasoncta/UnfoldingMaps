@@ -56,7 +56,7 @@ public class CityMarker extends CommonMarker {
 	
 		
 		pg.fill(245,255,225);
-		pg.rect(x, y, 300, 15);
+		pg.rect(x, y, 200, 15);
 		pg.fill(0,0,0);
 		pg.text(getCity() + " " + getCountry() + " " + getPopulation(), x, y+10); 
 		 
