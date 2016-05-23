@@ -164,15 +164,77 @@ public class EarthquakeCityMap extends PApplet {
 	 * where the city is in the threat circle
 	 */
 	@Override
-	public void mouseClicked()
+	public void mouseClicked() {
+		mouseClickedHelper(quakeMarkers, cityMarkers);
+	}
+	
+	
+	public void mouseClickedHelper(List<Marker>...lists)
 	{
 		// TODO: Implement this method
 		// Hint: You probably want a helper method or two to keep this code
 		// from getting too long/disorganized
+		for (List<Marker> i: lists) {
+			for (Marker m: i) {
+				if(m.isInside(map, mouseX, mouseY)) {
+					if (lastClicked == m) {
+						unhideMarkers();
+						lastClicked = null;
+					}
+
+					else {
+						hideOtherMarkers(m);
+						m.setHidden(false);
+						lastClicked = (CommonMarker) m;
+					}
+					return;
+				}
+			}
+
+
+
+		}
+		unhideMarkers();
+
+
 	}
 	
 	
+	public void hideOtherMarkers(Marker m) {
+		Location loc = m.getLocation();
+		if (m instanceof EarthquakeMarker) {
+			for (Marker i: quakeMarkers) {
+				i.setHidden(true);
+			}
+			for (Marker i: cityMarkers) {
+				double threatDis = ((EarthquakeMarker) m).threatCircle();
+				if (i.getDistanceTo(loc) > threatDis) {
+					i.setHidden(true);
+				}
+			}
+			
+		} // End if statement
+		
+		else {
+			for (Marker i: cityMarkers) {
+				i.setHidden(true);
+			}
+			
+			for (Marker i: quakeMarkers) {
+				double threatDis = ((EarthquakeMarker)i).threatCircle();
+				if (i.getDistanceTo(loc) > threatDis) {
+					i.setHidden(true);
+				}
+			}
+		}
+	}
+
+	
+	
+	
+	
 	// loop over and unhide all markers
+	
 	private void unhideMarkers() {
 		for(Marker marker : quakeMarkers) {
 			marker.setHidden(false);
