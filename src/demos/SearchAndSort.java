@@ -130,14 +130,7 @@ public class SearchAndSort {
 	{
 		String datafile = "data/airports.dat";
 		ArrayList<Airport> airports = readFile(datafile);
-		for(Airport a: airports) {
-			System.out.println(a.getName() + " (" + a.getCity() + ", " + a.getCountry() + ")");
-		}
 		Collections.sort(airports);
-		
-		for(Airport a: airports) {
-			System.out.println(a.getName() + " (" + a.getCity() + ", " + a.getCountry() + ")");
-		}
 		
 		System.out.println(findAirportCodeBS("Žilina", airports));
 		
