@@ -162,6 +162,7 @@ public class ParseFeed {
 			point.setId(columns[0]);
 			
 			// get other fields from csv
+			point.addProperty("airportNum", columns[0]);
 			point.addProperty("name", columns[1]);
 			point.putProperty("city", columns[2]);
 			point.putProperty("country", columns[3]);
@@ -213,6 +214,7 @@ public class ParseFeed {
 			if(!columns[3].equals("\\N") && !columns[5].equals("\\N")){
 				// set "source" property to be OpenFlights identifier for source airport
 				route.putProperty("source", columns[3]);
+				route.putProperty("code", columns[4]);
 				// "destination property" -- OpenFlights identifier
 				route.putProperty("destination", columns[5]);
 				

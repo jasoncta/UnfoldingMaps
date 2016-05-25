@@ -124,7 +124,7 @@ public class EarthquakeCityMap extends PApplet {
 	    //           for their geometric properties
 	    map.addMarkers(quakeMarkers);
 	    map.addMarkers(cityMarkers);
-	    sortAndPrint(5);
+	    sortAndPrint(100);
 	    
 	    
 	}  // End setup

@@ -27,6 +27,10 @@ public class AirportMap extends PApplet {
 	private List<Marker> airportList;
 	List<Marker> routeList;
 	
+	// Click variables
+	private CommonMarker lastSelected;
+	private CommonMarker lastClicked;
+	
 	public void setup() {
 		// setting up PAppler
 		size(800,600, OPENGL);
@@ -51,6 +55,8 @@ public class AirportMap extends PApplet {
 			
 			// put airport in hashmap with OpenFlights unique id for key
 			airports.put(Integer.parseInt(feature.getId()), feature.getLocation());
+			
+			//printAirports();
 		
 		}
 		
@@ -64,26 +70,30 @@ public class AirportMap extends PApplet {
 			int source = Integer.parseInt((String)route.getProperty("source"));
 			int dest = Integer.parseInt((String)route.getProperty("destination"));
 			
+			//int counter = 0;
 			// get locations for airports on route
 			if(airports.containsKey(source) && airports.containsKey(dest)) {
 				route.addLocation(airports.get(source));
 				route.addLocation(airports.get(dest));
 			}
 			
+			
 			SimpleLinesMarker sl = new SimpleLinesMarker(route.getLocations(), route.getProperties());
 		
-			System.out.println(sl.getProperties());
+			//System.out.println(sl.getProperties());
 			
 			//UNCOMMENT IF YOU WANT TO SEE ALL ROUTES
-			//routeList.add(sl);
+			routeList.add(sl);
 		}
 		
 		
 		
 		//UNCOMMENT IF YOU WANT TO SEE ALL ROUTES
-		//map.addMarkers(routeList);
+		map.addMarkers(routeList);
 		
 		map.addMarkers(airportList);
+		hideRoutes();
+		//removeSmallAirports();
 		
 	}
 	
@@ -91,7 +101,129 @@ public class AirportMap extends PApplet {
 		background(0);
 		map.draw();
 		
+		
 	}
+	
+	public void mouseMoved() {
+		
+		// clear the last selection
+		if (lastSelected != null) {
+			lastSelected.setSelected(false);
+			lastSelected = null;
+		}
+		
+		selectMarkerIfHover(airportList);
+		
+	}
+	
+	private void selectMarkerIfHover(List<Marker> a) {
+		
+		// Abort if there's already a marker selected
+		if (lastSelected != null) {
+			return;
+		}
+		
+		for (Marker m : a) {
+			CommonMarker marker = (CommonMarker)m;
+			if (marker.isInside(map, mouseX, mouseY)) {
+				lastSelected = marker;
+				showRoutes(m);
+				marker.setSelected(true);
+				return;
+			}
+			else {
+				unhideAirports();
+			}
+		}
+	}
+	
+	public void showRoutes(Marker m) {
+		for (Marker r: routeList) {
+			int source = Integer.parseInt((String)r.getProperty("source"));
+			//int dest = Integer.parseInt((String)r.getProperty("destination"));
+			String s = m.getStringProperty("airportNum");
+			int airportNum = Integer.parseInt(s);
+			//System.out.println(source + " " + airportNum);
+			ArrayList<Integer> destList = new ArrayList<Integer>();
+
+			if (source == airportNum) {
+				int dest = Integer.parseInt((String)r.getProperty("destination"));
+				destList.add(dest);
+				r.setHidden(false);
+				//m.setHidden(true);
+
+			}
+			else {
+				r.setHidden(true);
+				//m.setHidden(false);
+
+			}
+
+			/*
+			for (int i=0; i < destList.size(); i++) {
+				//System.out.println(source + " " + destList.get(i) + " ");
+				for (Marker a: airportList) {
+					String st = a.getStringProperty("airportNum");
+					Integer airportNumt = Integer.parseInt(st);
+
+					//System.out.println(st + " = " + airportNumt);
+
+					if (destList.get(i).intValue() == (airportNumt).intValue()) {
+						a.setHidden(false);
+						System.out.println("entered");
+					}
+					else {
+						a.setHidden(true);
+					}
+				}
+
+			}
+			*/
+
+		}
+	}
+	
+	private void unhideRoutes() {
+		for (Marker r: routeList) {
+			r.setHidden(false);
+		}
+	}
+	
+	private void hideRoutes() {
+		for (Marker r: routeList) {
+			r.setHidden(true);
+		}
+	}
+	
+	private void unhideAirports() {
+		for (Marker a: airportList) {
+			a.setHidden(false);
+		}
+	}
+	
+	private void removeSmallAirports() {
+		for (Marker a: airportList) {
+			int counter = 0;
+			for (Marker r: routeList) {
+				int source = Integer.parseInt((String)r.getProperty("source"));
+				String s = a.getStringProperty("airportNum");
+				int airportNum = Integer.parseInt(s);
+				if (source == airportNum) {
+					counter++;
+				}
+			}
+			if (counter < 10) {
+				a.setHidden(true);
+			}
+		}
+	}
+
+	public void printAirports() {
+		for (Marker m: airportList) {
+			System.out.println(m.getStringProperty("name"));
+		}
+	}
+	
 	
 
 }
