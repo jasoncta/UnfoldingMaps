@@ -1,5 +1,6 @@
 package module6;
 
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +27,7 @@ public class AirportMap extends PApplet {
 	UnfoldingMap map;
 	private List<Marker> airportList;
 	List<Marker> routeList;
+	private HashMapList<Integer, Integer> hMap;
 	
 	// Click variables
 	private CommonMarker lastSelected;
@@ -33,10 +35,10 @@ public class AirportMap extends PApplet {
 	
 	public void setup() {
 		// setting up PAppler
-		size(800,600, OPENGL);
+		size(1600,1200, OPENGL);
 		
 		// setting up map and default events
-		map = new UnfoldingMap(this, 50, 50, 750, 550);
+		map = new UnfoldingMap(this, 50, 50, 1450, 1050);
 		MapUtils.createDefaultEventDispatcher(this, map);
 		
 		// get features from airport data
@@ -45,6 +47,7 @@ public class AirportMap extends PApplet {
 		// list for markers, hashmap for quicker access when matching with routes
 		airportList = new ArrayList<Marker>();
 		HashMap<Integer, Location> airports = new HashMap<Integer, Location>();
+		hMap = new HashMapList<Integer, Integer>();
 		
 		// create markers from features
 		for(PointFeature feature : features) {
@@ -52,13 +55,16 @@ public class AirportMap extends PApplet {
 	
 			m.setRadius(5);
 			airportList.add(m);
+			//hMap.put(Integer.parseInt(feature.getId()), m);
 			
 			// put airport in hashmap with OpenFlights unique id for key
 			airports.put(Integer.parseInt(feature.getId()), feature.getLocation());
 			
 			//printAirports();
+			
 		
 		}
+		
 		
 		
 		// parse route data
@@ -75,6 +81,8 @@ public class AirportMap extends PApplet {
 			if(airports.containsKey(source) && airports.containsKey(dest)) {
 				route.addLocation(airports.get(source));
 				route.addLocation(airports.get(dest));
+				hMap.put(source, dest);
+				
 			}
 			
 			
@@ -82,9 +90,11 @@ public class AirportMap extends PApplet {
 		
 			//System.out.println(sl.getProperties());
 			
+			
 			//UNCOMMENT IF YOU WANT TO SEE ALL ROUTES
 			routeList.add(sl);
 		}
+		//System.out.println(hMap);
 		
 		
 		
@@ -93,7 +103,7 @@ public class AirportMap extends PApplet {
 		
 		map.addMarkers(airportList);
 		hideRoutes();
-		//removeSmallAirports();
+		removeSmallAirports();
 		
 	}
 	
@@ -127,13 +137,34 @@ public class AirportMap extends PApplet {
 			CommonMarker marker = (CommonMarker)m;
 			if (marker.isInside(map, mouseX, mouseY)) {
 				lastSelected = marker;
-				showRoutes(m);
+				//showRoutes(m);
+				unhideRoutes(m);
 				marker.setSelected(true);
 				return;
 			}
 			else {
-				unhideAirports();
+				//unhideAirports();
+				removeSmallAirports();
 			}
+		}
+	}
+	
+	public void unhideRoutes(Marker a) {
+		
+		int airportNum = Integer.parseInt(a.getStringProperty("airportNum"));
+		ArrayList<Integer> tmp = hMap.get(airportNum);
+		for (int i = 0; i < tmp.size(); i++) {
+			
+		for (Marker r: routeList) {
+			int source = Integer.parseInt((String)r.getProperty("source"));
+			if (airportNum == source) {
+				r.setHidden(false);
+			}
+			else {
+				r.setHidden(true);
+			}
+			
+		}
 		}
 	}
 	
@@ -203,17 +234,14 @@ public class AirportMap extends PApplet {
 	
 	private void removeSmallAirports() {
 		for (Marker a: airportList) {
-			int counter = 0;
-			for (Marker r: routeList) {
-				int source = Integer.parseInt((String)r.getProperty("source"));
-				String s = a.getStringProperty("airportNum");
-				int airportNum = Integer.parseInt(s);
-				if (source == airportNum) {
-					counter++;
-				}
+			//System.out.println(a.getStringProperty("airportNum"));
+			if (hMap.containsKey(Integer.parseInt(a.getStringProperty("airportNum")))) {
+				a.setHidden(false);
+				//System.out.println("entered");
 			}
-			if (counter < 10) {
+			else {
 				a.setHidden(true);
+				//System.out.println("hide: " + ((AirportMarker) a).getName());
 			}
 		}
 	}
@@ -223,6 +251,23 @@ public class AirportMap extends PApplet {
 			System.out.println(m.getStringProperty("name"));
 		}
 	}
+	
+	/*
+	public void createHashMap() {
+		hMap = new HashMap<Integer,ArrayList<Marker>>();
+		for (Marker a: airportList) {
+			String temp = a.getStringProperty("airportNum");
+			Integer airportNum = Integer.parseInt(temp);
+			for (Marker r: routeList) {
+				Integer source = Integer.parseInt(r.getStringProperty("source"));
+				if(airportNum.equals(source)) {
+					ArrayList<Marker>destList = new ArrayList<Marker>();
+					//destList.add(e);
+				}
+			}
+		}
+	}
+	*/
 	
 	
 
