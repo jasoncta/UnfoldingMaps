@@ -94,7 +94,7 @@ public class AirportMap extends PApplet {
 			//UNCOMMENT IF YOU WANT TO SEE ALL ROUTES
 			routeList.add(sl);
 		}
-		//System.out.println(hMap);
+		System.out.println(hMap);
 		
 		
 		
@@ -150,21 +150,26 @@ public class AirportMap extends PApplet {
 	}
 	
 	public void unhideRoutes(Marker a) {
-		
+
 		int airportNum = Integer.parseInt(a.getStringProperty("airportNum"));
 		ArrayList<Integer> tmp = hMap.get(airportNum);
+		airportList.get(airportNum);
 		for (int i = 0; i < tmp.size(); i++) {
-			
-		for (Marker r: routeList) {
-			int source = Integer.parseInt((String)r.getProperty("source"));
-			if (airportNum == source) {
-				r.setHidden(false);
+			routeList.get(i);
+/*
+			for (Marker r: routeList) {
+				int source = Integer.parseInt((String)r.getProperty("source"));
+				if (airportNum == source) {
+					r.setHidden(false);
+					//a.setHidden(false);
+				}
+				else {
+					r.setHidden(true);
+					//a.setHidden(true);
+				}
+
 			}
-			else {
-				r.setHidden(true);
-			}
-			
-		}
+			*/
 		}
 	}
 	
