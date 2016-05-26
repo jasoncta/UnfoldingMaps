@@ -1,9 +1,11 @@
 package module6;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.fhpotsdam.unfolding.data.Feature;
 import de.fhpotsdam.unfolding.data.PointFeature;
+import de.fhpotsdam.unfolding.marker.Marker;
 import de.fhpotsdam.unfolding.marker.SimpleLinesMarker;
 import processing.core.PGraphics;
 
@@ -15,10 +17,11 @@ import processing.core.PGraphics;
  *
  */
 public class AirportMarker extends CommonMarker {
-	public List<SimpleLinesMarker> routes;
+	public List<Marker> routes;
 	
 	public AirportMarker(Feature city) {
 		super(((PointFeature)city).getLocation(), city.getProperties());
+		routes = new ArrayList<Marker>();
 	
 	}
 	
@@ -41,9 +44,6 @@ public class AirportMarker extends CommonMarker {
 		pg.text(title, x + 4, y + 14);
 		
 		// show routes
-		for(SimpleLinesMarker s: routes) {
-			
-		}
 		
 		
 	}
@@ -67,5 +67,15 @@ public class AirportMarker extends CommonMarker {
 	
 	public void addRoute(SimpleLinesMarker e) {
 		routes.add(e);
+	}
+	
+	public void printRoute() {
+		for (int i = 0; i < routes.size(); i++) {
+			System.out.println(routes.get(i).getProperties());
+		}
+	}
+	
+	public List<Marker> getRoutes() {
+		return routes;
 	}
 }
